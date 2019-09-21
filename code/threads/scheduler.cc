@@ -32,6 +32,8 @@ Scheduler::Scheduler()
     readyList = new List; 
 } 
 
+long Scheduler::uid = 0;
+long Scheduler::tid = 0;
 //----------------------------------------------------------------------
 // Scheduler::~Scheduler
 // 	De-allocate the list of ready threads.
@@ -41,6 +43,17 @@ Scheduler::~Scheduler()
 { 
     delete readyList; 
 } 
+
+void 
+Scheduler::setUid(Thread* t) {
+    t->setUID(++uid);
+}
+
+void 
+Scheduler::setTid(Thread* t) {
+    t->setTID(++tid);
+}
+
 
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun
@@ -54,7 +67,8 @@ void
 Scheduler::ReadyToRun (Thread *thread)
 {
     DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
-
+    setUid(thread);
+    setTid(thread);
     thread->setStatus(READY);
     readyList->Append((void *)thread);
 }

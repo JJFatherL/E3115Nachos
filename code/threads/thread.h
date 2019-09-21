@@ -102,6 +102,11 @@ class Thread {
     char* getName() { return (name); }
     void Print() { printf("%s, ", name); }
 
+    void setUID(long uid) {userId = uid;} // set userid by scheduler
+    void setTID(long tid) {threadId = tid;} // set threadid by scheduler
+    long getUID() {return userId;} // set userid by scheduler
+    long getTID() {return threadId;} // set threadid by scheduler
+
   private:
     // some of the private data for this class is listed above
     
@@ -110,6 +115,8 @@ class Thread {
 					// (If NULL, don't deallocate stack)
     ThreadStatus status;		// ready, running or blocked
     char* name;
+    long userId;
+    long threadId; 
 
     void StackAllocate(VoidFunctionPtr func, void *arg);
     					// Allocate a stack for thread.
