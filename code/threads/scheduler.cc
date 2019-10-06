@@ -56,6 +56,7 @@ Scheduler::ReadyToRun (Thread *thread)
     DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
 
     thread->setStatus(READY);
+    if(readyList->NumInList() >= 128) return;
     readyList->Append((void *)thread);
 }
 
@@ -144,4 +145,15 @@ Scheduler::Print()
 {
     printf("Ready list contents:\n");
     readyList->Mapcar((VoidFunctionPtr) ThreadPrint);
+}
+ 
+
+void
+Scheduler::threadStatus()
+{
+    printf("--------------------------------\n");
+    printf("%d %s %s %s\n",currentThread->getPid(), currentThread->getName(), 
+            currentThread->getUserId(), "RUN");
+    readyList->Mapcar((VoidFunctionPtr) ThreadStatusPrint);
+    printf("--------------------------------\n");
 }

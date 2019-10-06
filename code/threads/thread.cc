@@ -24,6 +24,7 @@
 					// execution stack, for detecting 
 					// stack overflows
 
+unsigned int Thread::nextPid = 0;
 //----------------------------------------------------------------------
 // Thread::Thread
 // 	Initialize a thread control block, so that we can then call
@@ -32,12 +33,14 @@
 //	"threadName" is an arbitrary string, useful for debugging.
 //----------------------------------------------------------------------
 
-Thread::Thread(char* threadName)
+Thread::Thread(char* threadName, char* userId)
 {
     name = threadName;
+    this->userId = userId;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    pid = nextPid++;
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
@@ -236,6 +239,28 @@ Thread::Sleep ()
 static void ThreadFinish()    { currentThread->Finish(); }
 static void InterruptEnable() { interrupt->Enable(); }
 void ThreadPrint(int arg){ Thread *t = (Thread *)arg; t->Print(); }
+
+void Thread::PrintStatus() {
+    char* statusStr;
+    switch (status)
+    {
+    case RUNNING :
+        statusStr = "RUN";
+        break;
+    case READY:
+        statusStr = "RDY";
+        break;
+    case BLOCKED:
+        statusStr = "BLK";
+        break;
+    default:
+        statusStr = "NULL";
+    }
+    printf("%d %s %s %s\n",getPid(), getName(), 
+            getUserId(), statusStr);
+}
+
+void ThreadStatusPrint(int arg){ Thread *t = (Thread *)arg; t->PrintStatus(); }
 
 //----------------------------------------------------------------------
 // Thread::StackAllocate

@@ -36,6 +36,8 @@ SimpleThread(int which)
     }
 }
 
+
+
 //----------------------------------------------------------------------
 // ThreadTest1
 // 	Set up a ping-pong between two threads, by forking a thread 
@@ -47,10 +49,29 @@ ThreadTest1()
 {
     DEBUG('t', "Entering ThreadTest1");
 
-    Thread *t = new Thread("forked thread");
+    Thread *t = new Thread("forked thread", "root");
 
     t->Fork(SimpleThread, (void*)1);
     SimpleThread(0);
+}
+
+void
+StatusThread(int which)
+{
+    int num;
+    
+    for (num = 0; num < 2; num++) {
+        scheduler->threadStatus();
+        currentThread->Yield();
+    }
+}
+
+void
+ThreadTest2()
+{
+    Thread *t = new Thread("forked", "root");
+    t->Fork(StatusThread, (void*)1);
+    StatusThread(0);
 }
 
 //----------------------------------------------------------------------
@@ -65,6 +86,9 @@ ThreadTest()
     case 1:
 	ThreadTest1();
 	break;
+    case 2:
+    ThreadTest2();
+    break;
     default:
 	printf("No test specified.\n");
 	break;

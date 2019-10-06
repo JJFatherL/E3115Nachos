@@ -61,6 +61,7 @@ enum ThreadStatus { JUST_CREATED, RUNNING, READY, BLOCKED };
 
 // external function, dummy routine whose sole job is to call Thread::Print
 extern void ThreadPrint(int arg);	 
+extern void ThreadStatusPrint(int arg);
 
 // The following class defines a "thread control block" -- which
 // represents a single thread of execution.
@@ -75,13 +76,14 @@ extern void ThreadPrint(int arg);
 
 class Thread {
   private:
+    static unsigned int nextPid;
     // NOTE: DO NOT CHANGE the order of these first two members.
     // THEY MUST be in this position for SWITCH to work.
     int* stackTop;			 // the current stack pointer
     void *machineState[MachineStateSize];  // all registers except for stackTop
 
   public:
-    Thread(char* debugName);		// initialize a Thread 
+    Thread(char* debugName, char* userId);		// initialize a Thread 
     ~Thread(); 				// deallocate a Thread
 					// NOTE -- thread being deleted
 					// must not be running when delete 
@@ -99,8 +101,12 @@ class Thread {
     void CheckOverflow();   			// Check if thread has 
 						// overflowed its stack
     void setStatus(ThreadStatus st) { status = st; }
+    ThreadStatus getStatus() { return status; }
     char* getName() { return (name); }
     void Print() { printf("%s, ", name); }
+    void PrintStatus();
+    long getPid() {return pid;}
+    char* getUserId() {return userId;}
 
   private:
     // some of the private data for this class is listed above
@@ -110,6 +116,8 @@ class Thread {
 					// (If NULL, don't deallocate stack)
     ThreadStatus status;		// ready, running or blocked
     char* name;
+    char* userId;
+    long pid;
 
     void StackAllocate(VoidFunctionPtr func, void *arg);
     					// Allocate a stack for thread.
