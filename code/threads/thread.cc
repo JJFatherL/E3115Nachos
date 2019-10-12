@@ -33,7 +33,7 @@ unsigned int Thread::nextPid = 0;
 //	"threadName" is an arbitrary string, useful for debugging.
 //----------------------------------------------------------------------
 
-Thread::Thread(char* threadName, char* userId)
+Thread::Thread(char* threadName, char* userId ,unsigned int pri)
 {
     name = threadName;
     this->userId = userId;
@@ -41,6 +41,7 @@ Thread::Thread(char* threadName, char* userId)
     stack = NULL;
     status = JUST_CREATED;
     pid = nextPid++;
+    this->pri = pri;
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
@@ -99,6 +100,8 @@ Thread::Fork(VoidFunctionPtr func, void *arg)
     scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts 
 					// are disabled!
     (void) interrupt->SetLevel(oldLevel);
+    if (currentThread->getPri() > this->getPri())
+        currentThread->Yield();
 }    
 
 //----------------------------------------------------------------------

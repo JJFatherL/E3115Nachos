@@ -57,7 +57,7 @@ Scheduler::ReadyToRun (Thread *thread)
 
     thread->setStatus(READY);
     if(readyList->NumInList() >= 128) return;
-    readyList->Append((void *)thread);
+    readyList->SortedInsert((void *)thread, thread->getPri());
 }
 
 //----------------------------------------------------------------------

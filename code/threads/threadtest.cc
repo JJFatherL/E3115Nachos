@@ -49,7 +49,7 @@ ThreadTest1()
 {
     DEBUG('t', "Entering ThreadTest1");
 
-    Thread *t = new Thread("forked thread", "root");
+    Thread *t = new Thread("forked thread", "root", 1);
 
     t->Fork(SimpleThread, (void*)1);
     SimpleThread(0);
@@ -69,9 +69,27 @@ StatusThread(int which)
 void
 ThreadTest2()
 {
-    Thread *t = new Thread("forked", "root");
+    Thread *t = new Thread("forked", "root", 1);
     t->Fork(StatusThread, (void*)1);
     StatusThread(0);
+}
+
+void
+PriTestThread(int which)
+{
+    printf("%d process pri is: %d\n", which, currentThread->getPri());
+    printf("%d process is over\n", which);
+}
+
+void 
+ThreadTest3()
+{
+    printf("0 process pri is: %d\n", currentThread->getPri());
+    Thread *highT = new Thread("high", "root", 0);
+    Thread *lowT = new Thread("low", "root", 2);
+    lowT->Fork(PriTestThread, (void*)2);
+    highT->Fork(PriTestThread, (void*)1);
+    printf("0 process is over\n", currentThread->getPri());
 }
 
 //----------------------------------------------------------------------
@@ -88,6 +106,9 @@ ThreadTest()
 	break;
     case 2:
     ThreadTest2();
+    break;
+    case 3:
+    ThreadTest3();
     break;
     default:
 	printf("No test specified.\n");

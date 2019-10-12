@@ -83,7 +83,7 @@ class Thread {
     void *machineState[MachineStateSize];  // all registers except for stackTop
 
   public:
-    Thread(char* debugName, char* userId);		// initialize a Thread 
+    Thread(char* debugName, char* userId, unsigned int pri=1);		// initialize a Thread 
     ~Thread(); 				// deallocate a Thread
 					// NOTE -- thread being deleted
 					// must not be running when delete 
@@ -107,6 +107,7 @@ class Thread {
     void PrintStatus();
     long getPid() {return pid;}
     char* getUserId() {return userId;}
+    unsigned short getPri() {return pri;}
 
   private:
     // some of the private data for this class is listed above
@@ -118,6 +119,7 @@ class Thread {
     char* name;
     char* userId;
     long pid;
+    unsigned short pri;
 
     void StackAllocate(VoidFunctionPtr func, void *arg);
     					// Allocate a stack for thread.
